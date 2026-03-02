@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anexo 2 – Matriz de Metas e Indicadores | ITP 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,500;0,700;1,300&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --hdr: #0F2A4A; --accent: #F5820A; --blue: #1355A6;
+    --green: #0E8A55; --amber: #D97706; --red: #C0392B;
+    --surface: #F4F6FB; --border: #DDE3EE; --text: #1A1F2E; --muted: #6B7A99;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--surface); color: var(--text); min-height: 100vh; }
+
+  .topbar { background: var(--hdr); color: white; padding: 14px 28px; display: flex; align-items: center; gap: 14px; }
+  .logo { font-family: 'Space Mono', monospace; font-size: 18px; color: var(--accent); letter-spacing: 2px; }
+  .breadcrumb { font-size: 12px; color: #7fa3cc; margin-left: auto; }
+
+  .hero { background: linear-gradient(135deg, var(--hdr) 0%, #1a3f6e 100%); padding: 40px 32px 32px; border-bottom: 3px solid var(--accent); position: relative; overflow: hidden; }
+  .hero::after { content:''; position:absolute; right:-60px; top:-60px; width:300px; height:300px; background:radial-gradient(circle,rgba(245,130,10,.15) 0%,transparent 70%); border-radius:50%; }
+  .hero h1 { font-size: 24px; font-weight: 700; color: white; margin-bottom: 6px; }
+  .hero p { font-size: 13px; color: #7fa3cc; }
+  .hero-badge { display:inline-flex; align-items:center; gap:6px; background:var(--accent); color:white; font-size:11px; font-weight:700; padding:4px 12px; border-radius:20px; margin-top:14px; letter-spacing:.4px; }
+  .hint-bar { background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12); border-radius:8px; padding:10px 16px; margin-top:18px; font-size:12px; color:#adc8e6; display:flex; gap:10px; align-items:center; }
+
+  .container { max-width: 1200px; margin: 28px auto; padding: 0 20px; }
+  .legend { background:white; border-radius:10px; padding:12px 20px; margin-bottom:22px; display:flex; align-items:center; gap:20px; flex-wrap:wrap; box-shadow:0 1px 4px rgba(0,0,0,.07); font-size:13px; border:1px solid var(--border); }
+  .dot { width:10px; height:10px; border-radius:50%; display:inline-block; margin-right:4px; vertical-align:middle; }
+
+  .area-section { margin-bottom: 18px; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,.09); border: 1px solid var(--border); }
+  .area-header { display:flex; align-items:center; justify-content:space-between; padding:17px 22px; cursor:pointer; user-select:none; transition:filter .15s; }
+  .area-header:hover { filter: brightness(1.06); }
+  .area-title { font-size:15px; font-weight:700; color:white; display:flex; align-items:center; gap:10px; }
+  .area-count { background:rgba(255,255,255,.22); color:white; font-size:11px; font-weight:600; padding:2px 10px; border-radius:20px; }
+  .chevron { color:white; font-size:18px; transition:transform .3s; }
+  .area-section.collapsed .chevron { transform: rotate(-90deg); }
+
+  .a-gerencia    .area-header { background: linear-gradient(90deg,#0F2A4A,#1A4C8C); }
+  .a-direccion   .area-header { background: linear-gradient(90deg,#5C1E7A,#8B2FC5); }
+  .a-recepcion   .area-header { background: linear-gradient(90deg,#8B1A1A,#C0392B); }
+  .a-acomp       .area-header { background: linear-gradient(90deg,#0A5C3A,#0E8A55); }
+  .a-vinculacion .area-header { background: linear-gradient(90deg,#7A4F10,#B7770D); }
+
+  .area-body { background:white; padding:20px; display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:14px; }
+  .area-section.collapsed .area-body { display: none; }
+
+  .ind-card { border:1px solid var(--border); border-radius:10px; padding:16px; transition:all .2s; position:relative; overflow:hidden; }
+  .ind-card:hover { box-shadow:0 8px 24px rgba(0,0,0,.11); border-color:#c5d4ee; }
+  .card-stripe { position:absolute; top:0; left:0; width:4px; height:100%; }
+  .ind-obj { font-size:10px; font-weight:700; text-transform:uppercase; color:var(--muted); letter-spacing:.5px; margin-bottom:6px; }
+  .ind-name { font-size:13px; font-weight:600; color:var(--text); margin-bottom:10px; line-height:1.45; }
+  .meta-row { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+  .meta-lbl { font-size:11px; color:var(--muted); font-weight:500; }
+  .meta-val { font-size:13px; font-weight:700; color:var(--blue); background:#eef3fc; padding:2px 8px; border-radius:5px; }
+  .prog-wrap { display:flex; align-items:center; gap:6px; margin-top:4px; }
+  .prog-bg { flex:1; height:7px; background:#eee; border-radius:4px; overflow:hidden; }
+  .prog-fill { height:100%; border-radius:4px; background:linear-gradient(90deg,#2bc97a,var(--green)); }
+  .prog-lbl { font-size:10px; color:var(--muted); font-weight:600; min-width:16px; }
+
+  .card-actions { display:flex; gap:8px; margin-top:12px; }
+  .btn-detail, .btn-tips {
+    flex:1; padding:7px 10px; border:none; border-radius:7px;
+    font-size:12px; font-weight:600; cursor:pointer; transition:all .15s;
+    display:flex; align-items:center; justify-content:center; gap:5px;
+    font-family:'DM Sans',sans-serif;
+  }
+  .btn-detail { background:#eef3fc; color:var(--blue); }
+  .btn-detail:hover { background:#dce8ff; }
+  .btn-tips { background:linear-gradient(135deg,#0E8A55,#0a6640); color:white; }
+  .btn-tips:hover { filter:brightness(1.1); transform:scale(1.03); }
+
+  /* MODALS */
+  .modal-overlay, .tips-modal-overlay {
+    display:none; position:fixed; inset:0;
+    background:rgba(5,15,35,.6); z-index:1000;
+    align-items:center; justify-content:center;
+    padding:16px; backdrop-filter:blur(4px);
+  }
+  .modal-overlay.open, .tips-modal-overlay.open { display:flex; }
+  .tips-modal-overlay { z-index: 1100; }
+
+  .modal, .tips-modal {
+    background:white; border-radius:14px; width:100%; max-width:760px; max-height:92vh;
+    overflow-y:auto; box-shadow:0 30px 80px rgba(0,0,0,.35); animation:popIn .22s ease;
+  }
+  @keyframes popIn { from{transform:scale(.94) translateY(20px);opacity:0} to{transform:scale(1) translateY(0);opacity:1} }
+
+  .modal-head { padding:22px 24px 16px; border-bottom:1px solid var(--border); position:sticky; top:0; background:white; z-index:2; display:flex; align-items:flex-start; justify-content:space-between; }
+  .modal-badge { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.6px; padding:3px 10px; border-radius:20px; color:white; margin-bottom:6px; display:inline-block; }
+  .modal-title { font-size:17px; font-weight:700; color:var(--text); max-width:600px; }
+  .btn-close { background:#f0f0f0; border:none; border-radius:50%; width:34px; height:34px; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; color:#555; transition:background .15s; flex-shrink:0; margin-left:12px; }
+  .btn-close:hover { background:#ddd; }
+  .modal-body { padding:24px; }
+  .sec-title { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.6px; color:var(--muted); margin-bottom:10px; padding-bottom:6px; border-bottom:2px solid var(--border); }
+
+  .dtable { width:100%; border-collapse:collapse; font-size:13.5px; margin-bottom:22px; }
+  .dtable th { background:var(--hdr); color:white; padding:9px 14px; text-align:left; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.4px; width:38%; }
+  .dtable td { padding:9px 14px; border-bottom:1px solid #f0f0f0; }
+  .dtable tr:nth-child(even) td { background:#fafbfd; }
+
+  .sem-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:22px; }
+  .sem-cell { border-radius:10px; padding:16px 12px; text-align:center; border:2px solid transparent; }
+  .sem-bad    { background:#fdf1ef; border-color:var(--red); }
+  .sem-neutral{ background:#fef9ec; border-color:var(--amber); }
+  .sem-good   { background:#edfaf4; border-color:var(--green); }
+  .sem-icon { font-size:24px; margin-bottom:4px; }
+  .sem-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--muted); }
+  .sem-value { font-size:22px; font-weight:700; margin:4px 0; }
+  .sem-desc { font-size:11px; color:var(--muted); }
+  .sem-bad .sem-value { color:var(--red); }
+  .sem-neutral .sem-value { color:var(--amber); }
+  .sem-good .sem-value { color:var(--green); }
+
+  .chart-area { display:flex; align-items:flex-end; justify-content:center; gap:24px; padding:10px 0 6px; margin-bottom:22px; }
+  .chart-col { display:flex; flex-direction:column; align-items:center; gap:5px; }
+  .chart-bar { width:60px; border-radius:8px 8px 0 0; min-height:12px; }
+  .bar-bad    { background:linear-gradient(180deg,#e05046,var(--red)); }
+  .bar-neutral{ background:linear-gradient(180deg,#f5b942,var(--amber)); }
+  .bar-good   { background:linear-gradient(180deg,#2bc97a,var(--green)); }
+  .chart-val { font-size:14px; font-weight:700; }
+  .chart-lbl { font-size:11px; color:var(--muted); }
+
+  /* TIPS MODAL */
+  .tips-head {
+    background:linear-gradient(135deg,#0a4a2a 0%,#0E8A55 100%);
+    padding:22px 24px; border-radius:14px 14px 0 0;
+    display:flex; align-items:flex-start; justify-content:space-between;
+  }
+  .tips-head-icon { font-size:32px; margin-bottom:8px; }
+  .tips-head-sub { font-size:11px; color:#a8e6c8; font-weight:600; text-transform:uppercase; letter-spacing:.5px; }
+  .tips-head-title { font-size:16px; font-weight:700; color:white; margin-top:4px; max-width:560px; line-height:1.4; }
+  .tips-head .btn-close { background:rgba(255,255,255,.15); color:white; }
+  .tips-head .btn-close:hover { background:rgba(255,255,255,.28); }
+  .tips-body { padding:24px; }
+
+  .tips-intro {
+    background:linear-gradient(135deg,#f0faf5,#e5f7ed);
+    border:1px solid #b2dfc5; border-radius:10px;
+    padding:14px 16px; margin-bottom:20px;
+    font-size:13px; color:#1a5c3a; line-height:1.6;
+  }
+  .tips-intro strong { color:var(--green); }
+
+  .tips-list { display:flex; flex-direction:column; gap:12px; margin-bottom:20px; }
+  .tip-item {
+    border:1px solid var(--border); border-radius:10px;
+    padding:14px 16px; display:flex; gap:14px; align-items:flex-start;
+    transition:box-shadow .15s;
+    animation:fadeSlide .3s ease both;
+  }
+  @keyframes fadeSlide { from{opacity:0;transform:translateX(-12px)} to{opacity:1;transform:translateX(0)} }
+  .tip-item:hover { box-shadow:0 4px 16px rgba(0,0,0,.09); }
+  .tip-num {
+    background:var(--green); color:white;
+    font-family:'Space Mono',monospace; font-size:12px; font-weight:700;
+    width:26px; height:26px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .tip-content { flex:1; }
+  .tip-category { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--green); margin-bottom:3px; }
+  .tip-text { font-size:13px; color:var(--text); line-height:1.6; }
+
+  .tips-footer { background:#f0faf5; border-radius:10px; padding:12px 16px; font-size:12px; color:var(--muted); border:1px solid #c8e8d5; display:flex; align-items:center; gap:8px; }
+
+  .page-footer { text-align:center; font-size:12px; color:var(--muted); padding:20px; margin-top:8px; }
+
+  @media (max-width:600px) {
+    .area-body { grid-template-columns:1fr; }
+    .sem-grid { grid-template-columns:1fr; }
+    .chart-bar { width:40px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">ITP·2026</div>
+  <div class="breadcrumb">Plan Estratégico › Anexo 2 › Metas e Indicadores</div>
+</div>
+
+<div class="hero">
+  <h1>📊 Anexo 2 – Matriz de Metas e Indicadores por Área</h1>
+  <p>Instituto Tecnológico Polivalente · Plan Estratégico 2026</p>
+  <div class="hero-badge">🗓 Sesiones de trabajo equipo ITP, 2025</div>
+  <div class="hint-bar">
+    💡 <span>Haz clic en <strong style="color:#6ee8a8">💡 Consejo ITP</strong> en cada tarjeta para ver las recomendaciones estratégicas del instituto</span>
+  </div>
+</div>
+
+<div class="container">
+  <div class="legend">
+    <strong>Semáforo:</strong>
+    <div><span class="dot" style="background:var(--red)"></span> Por debajo</div>
+    <div><span class="dot" style="background:var(--amber)"></span> En progreso</div>
+    <div><span class="dot" style="background:var(--green)"></span> Meta alcanzada</div>
+    <div style="margin-left:auto;font-size:12px;color:var(--muted)">📋 Ver detalle &nbsp;|&nbsp; 💡 Consejo ITP por indicador</div>
+  </div>
+
+  <div id="areas-root"></div>
+  <div class="page-footer">Fuente: Sesiones de trabajo equipo ITP, 2025.</div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailOverlay" onclick="closeDetail(event)">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <span class="modal-badge" id="dBadge"></span>
+        <div class="modal-title" id="dTitle"></div>
+      </div>
+      <button class="btn-close" onclick="closeDetailModal()">✕</button>
+    </div>
+    <div class="modal-body" id="dBody"></div>
+  </div>
+</div>
+
+<!-- TIPS MODAL -->
+<div class="tips-modal-overlay" id="tipsOverlay" onclick="closeTipsEv(event)">
+  <div class="tips-modal">
+    <div class="tips-head">
+      <div>
+        <div class="tips-head-icon">💡</div>
+        <div class="tips-head-sub" id="tipsArea"></div>
+        <div class="tips-head-title" id="tipsTitle"></div>
+      </div>
+      <button class="btn-close" onclick="closeTipsModal()">✕</button>
+    </div>
+    <div class="tips-body" id="tipsBody"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+//  DATA — indicadores con consejos fijos por métrica
+// ═══════════════════════════════════════════════════
+const areas = [
+  {
+    key:'gerencia', label:'Gerencia', icon:'🏢', cls:'a-gerencia', color:'#1A4C8C',
+    indicators:[
+      {
+        objetivo:'Fortalecer vinculación laboral',
+        indicador:'Crecimiento del número de alianzas estratégicas empresariales',
+        meta:'≥40', base:'N° empresas actuales + N° empresas nuevas = N° empresas totales',
+        minus:25, igual:30, plus:40,
+        resumen:'Ampliar la red empresarial del ITP es clave para garantizar oportunidades reales de empleo a cada estudiante graduado.',
+        consejos:[
+          {categoria:'Prospección', texto:'Elaborar un mapa de empresas potenciales por sector (tecnología, servicio al cliente, logística) en la GAM y acercarse con una propuesta formal de alianza cada mes.'},
+          {categoria:'Eventos', texto:'Organizar al menos una feria de empleadores por cuatrimestre dentro del ITP para crear relaciones directas entre empresas y estudiantes próximos a graduarse.'},
+          {categoria:'Seguimiento', texto:'Mantener un CRM básico (hoja de cálculo compartida o plataforma gratuita) con el estado de cada empresa contactada, fecha de seguimiento y persona responsable.'},
+          {categoria:'Red de egresados', texto:'Activar la red de exalumnos contratados para que recomienden el ITP en sus empresas y faciliten el primer contacto con el área de Recursos Humanos.'},
+          {categoria:'Alianzas institucionales', texto:'Coordinar con el MTSS, INA y cámaras empresariales acuerdos de referenciación mutua que amplíen el directorio de empresas aliadas sin costo adicional.'},
+          {categoria:'Diferenciación', texto:'Preparar un brochure digital actualizado que muestre el perfil de egresado ITP, tasas de retención y casos de éxito para entregar a cada empresa nueva contactada.'},
+        ]
+      },
+      {
+        objetivo:'Fortalecer vinculación laboral',
+        indicador:'Evaluación de satisfacción de las empresas (Vinculación)',
+        meta:'≥95', base:'Calificación 87,5',
+        minus:80, igual:87.5, plus:95,
+        resumen:'La satisfacción empresarial es el termómetro más directo de la calidad del ITP; una calificación alta abre puertas a nuevas alianzas.',
+        consejos:[
+          {categoria:'Encuesta', texto:'Aplicar una encuesta de satisfacción breve (máximo 5 preguntas) a cada empresa al concluir cada proceso de selección, y compartir los resultados internamente.'},
+          {categoria:'Tiempo de respuesta', texto:'Establecer un protocolo de atención donde las solicitudes de empresas se respondan en menos de 24 horas hábiles por parte del equipo de vinculación.'},
+          {categoria:'Perfiles ajustados', texto:'Revisar con cada empresa sus requerimientos específicos antes de enviar candidatos, evitando envíos masivos que no coincidan con el perfil solicitado.'},
+          {categoria:'Posventa', texto:'Hacer una llamada de seguimiento 30 días después de la contratación para verificar la adaptación del estudiante y ofrecer apoyo si es necesario.'},
+          {categoria:'Mejora continua', texto:'Identificar los puntos de insatisfacción más frecuentes y crear un plan de mejora trimestral que se comparta con la Dirección del ITP.'},
+          {categoria:'Comunicación', texto:'Enviar a las empresas aliadas un boletín semestral con estadísticas de rendimiento de los estudiantes colocados y novedades de los programas del ITP.'},
+        ]
+      },
+      {
+        objetivo:'Fortalecer marca empresarial',
+        indicador:'Participación y/o coordinación de actividades de empleabilidad (Relaciones Públicas)',
+        meta:'4 actividades', base:'Suma de actividades realizadas',
+        minus:2, igual:3, plus:4,
+        resumen:'La presencia activa del ITP en actividades de empleabilidad posiciona la marca y genera confianza en el ecosistema empresarial costarricense.',
+        consejos:[
+          {categoria:'Calendario', texto:'Definir a inicio de año las 4 actividades de empleabilidad (ferias, charlas, webinars, visitas empresariales) con fechas, responsables y presupuesto asignado.'},
+          {categoria:'Alianzas de co-organización', texto:'Co-organizar actividades con el MTSS, municipalidades o universidades para reducir costos y ampliar la convocatoria de participantes.'},
+          {categoria:'Visibilidad', texto:'Transmitir en vivo las actividades por las redes sociales del ITP y publicar un resumen fotográfico y de resultados tras cada evento.'},
+          {categoria:'Participación estudiantil', texto:'Involucrar a los estudiantes en la logística de cada actividad como parte de su formación en habilidades blandas y trabajo en equipo.'},
+          {categoria:'Medición', texto:'Registrar en cada actividad: número de empresas participantes, estudiantes asistentes, contactos nuevos generados y entrevistas realizadas.'},
+          {categoria:'Retroalimentación', texto:'Aplicar una encuesta rápida al final de cada actividad para identificar qué mejorar en la siguiente edición y demostrar compromiso con la calidad.'},
+        ]
+      },
+      {
+        objetivo:'Fortalecer marca empresarial',
+        indicador:'Creación de cursos nuevos de empleabilidad (IA, otros)',
+        meta:'4 cursos', base:'Suma de cursos creados',
+        minus:1, igual:3, plus:4,
+        resumen:'Desarrollar oferta formativa actualizada en IA y habilidades emergentes diferencia al ITP y aumenta la empleabilidad de sus estudiantes.',
+        consejos:[
+          {categoria:'Detección de necesidades', texto:'Encuestar a las empresas aliadas cada seis meses para identificar las competencias técnicas que más demandan y usarlas como base para nuevos cursos.'},
+          {categoria:'Diseño ágil', texto:'Usar una metodología de diseño instruccional rápido (4 semanas) que permita lanzar versiones piloto de cursos antes de su versión definitiva.'},
+          {categoria:'Docentes expertos', texto:'Reclutar profesionales activos en IA, automatización y atención al cliente digital como instructores invitados, reduciendo tiempo de desarrollo curricular.'},
+          {categoria:'Contenido práctico', texto:'Basar el 70 % de cada nuevo curso en casos prácticos y proyectos reales, con herramientas gratuitas accesibles para todos los estudiantes.'},
+          {categoria:'Validación empresarial', texto:'Presentar el programa de cada nuevo curso a al menos dos empresas aliadas antes de su lanzamiento para asegurar relevancia en el mercado laboral.'},
+          {categoria:'Cronograma', texto:'Planificar el lanzamiento de un curso nuevo por trimestre con un responsable de diseño, revisión y ejecución claramente definido desde el inicio del año.'},
+        ]
+      },
+      {
+        objetivo:'Estandarizar modelo de entrenamiento',
+        indicador:'Capacitar al personal sobre tecnologías generativas en procesos administrativos y educativos',
+        meta:'2 capacitaciones', base:'Suma de capacitaciones efectuadas',
+        minus:1, igual:2, plus:3,
+        resumen:'El dominio de tecnologías generativas por parte del equipo ITP mejora la productividad interna y modela el tipo de formación que se entrega a los estudiantes.',
+        consejos:[
+          {categoria:'Diagnóstico', texto:'Aplicar una encuesta inicial al personal para conocer el nivel de familiaridad con herramientas de IA (ChatGPT, Copilot, Gemini) y definir los contenidos prioritarios.'},
+          {categoria:'Formato accesible', texto:'Realizar las capacitaciones en sesiones cortas de 2 a 3 horas, combinando teoría con práctica inmediata en las tareas reales del personal.'},
+          {categoria:'Capacitador interno', texto:'Designar a un miembro del equipo con mayor dominio tecnológico como facilitador interno, reduciendo costos y fortaleciendo el liderazgo interno.'},
+          {categoria:'Recursos gratuitos', texto:'Apoyarse en recursos de plataformas como Google, Microsoft Learn y Coursera que ofrecen formación gratuita certificada en herramientas de IA generativa.'},
+          {categoria:'Aplicación inmediata', texto:'Cada capacitación debe cerrar con un compromiso concreto: cada participante identifica una tarea de su trabajo que mejorará usando la herramienta aprendida.'},
+          {categoria:'Evidencia', texto:'Documentar cada capacitación con lista de asistencia, fotos y un breve informe de resultados para el registro del indicador y futura referencia institucional.'},
+        ]
+      },
+    ]
+  },
+  {
+    key:'direccion', label:'Dirección Académica', icon:'📚', cls:'a-direccion', color:'#8B2FC5',
+    indicators:[
+      {
+        objetivo:'Estandarizar modelo de entrenamiento',
+        indicador:'Cantidad de capacitaciones docentes al año',
+        meta:'4', base:'N° de capacitaciones ejecutadas',
+        minus:1, igual:3, plus:4,
+        resumen:'Un cuerpo docente en actualización permanente es la base de un modelo de entrenamiento de alta calidad que responde a las demandas del mercado.',
+        consejos:[
+          {categoria:'Planificación', texto:'Incluir las 4 capacitaciones docentes en el plan operativo anual desde enero, con tema, fecha tentativa, facilitador y presupuesto asignado para cada una.'},
+          {categoria:'Temas prioritarios', texto:'Priorizar temas como metodologías activas de aprendizaje, uso de IA en el aula, evaluación por competencias y habilidades socioemocionales para docentes.'},
+          {categoria:'Variedad de formatos', texto:'Alternar entre talleres presenciales, webinars externos, visitas a otras instituciones y comunidades de práctica internas para mantener el interés del equipo docente.'},
+          {categoria:'Registro', texto:'Llevar una ficha de capacitación por docente con los temas cubiertos, competencias desarrolladas y fecha, actualizándola después de cada sesión.'},
+          {categoria:'Aplicación en aula', texto:'Pedir a cada docente un mini-informe de una página sobre cómo aplicó lo aprendido en su próxima sesión de clase, cerrando el ciclo formativo.'},
+          {categoria:'Reconocimiento', texto:'Reconocer públicamente en reuniones de equipo a los docentes que destacan en la aplicación de nuevas metodologías aprendidas en las capacitaciones.'},
+        ]
+      },
+      {
+        objetivo:'Estandarizar modelo de entrenamiento',
+        indicador:'Programas de entrenamiento estandarizados',
+        meta:'≥95%', base:'Programas estandarizados / Total de programas × 100',
+        minus:80, igual:87.5, plus:95,
+        resumen:'Estandarizar los programas garantiza que todos los estudiantes reciban la misma calidad de formación, independientemente del docente o sede.',
+        consejos:[
+          {categoria:'Auditoría inicial', texto:'Levantar un inventario de todos los programas activos y clasificarlos en: completamente estandarizados, parcialmente estandarizados y sin estandarizar, priorizando los críticos.'},
+          {categoria:'Plantilla única', texto:'Definir y socializar una plantilla institucional obligatoria para todos los programas que incluya: objetivos, contenidos, metodología, evaluación y recursos requeridos.'},
+          {categoria:'Revisión por pares', texto:'Implementar revisiones cruzadas donde cada docente revisa el programa de un colega antes de su aprobación final, mejorando calidad y coherencia.'},
+          {categoria:'Cronograma de actualización', texto:'Establecer que cada programa se revisa y actualiza al menos una vez al año, con fecha límite y responsable asignado desde la Dirección.'},
+          {categoria:'Repositorio digital', texto:'Centralizar todos los programas estandarizados en una carpeta compartida accesible para todo el equipo docente, con control de versiones claro.'},
+          {categoria:'Monitoreo', texto:'Verificar mensualmente el porcentaje de cumplimiento del indicador y comunicar el avance al equipo para mantener la meta como prioridad colectiva.'},
+        ]
+      },
+      {
+        objetivo:'Fortalecer marca empresarial',
+        indicador:'Creación de cursos nuevos de empleabilidad (IA, otros) – en conjunto con Gerencia',
+        meta:'4 cursos', base:'Suma de cursos creados',
+        minus:2, igual:3, plus:4,
+        resumen:'La co-creación entre Dirección y Gerencia garantiza cursos relevantes tanto pedagógicamente como en términos de demanda del mercado laboral.',
+        consejos:[
+          {categoria:'Mesa conjunta', texto:'Establecer una reunión mensual entre Dirección y Gerencia específicamente para revisar avances, compartir insumos de empresas y tomar decisiones sobre nuevos cursos.'},
+          {categoria:'Roles definidos', texto:'Aclarar desde el inicio quién lidera el diseño pedagógico (Dirección) y quién valida la pertinencia con el mercado (Gerencia) para evitar duplicar esfuerzos.'},
+          {categoria:'Banco de ideas', texto:'Crear un documento compartido donde cualquier miembro del equipo pueda proponer ideas de nuevos cursos con justificación de demanda, facilitando la selección.'},
+          {categoria:'Piloto rápido', texto:'Antes de desarrollar el curso completo, hacer una sesión piloto de 2 horas con un grupo reducido para validar el contenido y ajustar según la retroalimentación.'},
+          {categoria:'Recursos compartidos', texto:'Aprovechar los contactos empresariales de Gerencia para invitar a profesionales como co-instructores, enriqueciendo el contenido sin aumentar el presupuesto.'},
+          {categoria:'Lanzamiento comunicado', texto:'Cada nuevo curso debe tener una comunicación de lanzamiento en redes sociales y grupos de WhatsApp institucionales para maximizar la matrícula inicial.'},
+        ]
+      },
+      {
+        objetivo:'Fortalecer vinculación laboral',
+        indicador:'Mantener la deserción estudiantil al 10%',
+        meta:'≤10%', base:'Total estudiantes matriculadas / Total estudiantes capacitados × 100',
+        minus:12, igual:10, plus:5, inverso:true,
+        resumen:'Reducir la deserción es sinónimo de mayor impacto social y mejores indicadores de colocación laboral; cada estudiante que completa el programa es un éxito del ITP.',
+        consejos:[
+          {categoria:'Alerta temprana', texto:'Identificar en las primeras 2 semanas de cada programa a estudiantes con ausentismo o dificultades académicas para intervenir antes de que abandonen.'},
+          {categoria:'Acompañamiento psicológico', texto:'Coordinar con el área de Acompañamiento Psicológico visitas preventivas a grupos con mayor historial de deserción en los primeros 30 días del programa.'},
+          {categoria:'Flexibilidad horaria', texto:'Explorar opciones de recuperación de sesiones o materiales en línea para estudiantes con situaciones laborales o familiares que dificulten la asistencia regular.'},
+          {categoria:'Motivación', texto:'Compartir historias de éxito de egresados en cada grupo al inicio del programa para fortalecer la motivación y el sentido de propósito de los estudiantes.'},
+          {categoria:'Causas de deserción', texto:'Documentar el motivo de cada baja (económico, laboral, familiar, académico) para diseñar respuestas específicas y no genéricas a cada tipo de causa.'},
+          {categoria:'Seguimiento', texto:'Contactar a estudiantes ausentes por más de dos sesiones consecutivas mediante llamada telefónica antes de registrar la baja formalmente.'},
+        ]
+      },
+      {
+        objetivo:'Fortalecer marca empresarial',
+        indicador:'Estrategia de crecimiento en redes sociales (Contenido estratégico)',
+        meta:'18 publicaciones mensuales', base:'Suma de publicaciones efectuadas al mes',
+        minus:12, igual:16, plus:18,
+        resumen:'Una presencia digital activa y coherente posiciona al ITP como referente en formación para el empleo en Costa Rica y atrae nuevos estudiantes y empresas aliadas.',
+        consejos:[
+          {categoria:'Calendario editorial', texto:'Elaborar un calendario mensual de contenido con los 18 temas definidos por semana, asignando responsable de redacción, diseño y publicación para cada uno.'},
+          {categoria:'Variedad de formatos', texto:'Combinar publicaciones de tipo: testimonial de estudiante, dato del mercado laboral, tip de empleabilidad, detrás de cámaras ITP, anuncio de curso y logro de egresado.'},
+          {categoria:'Reutilización', texto:'Adaptar el mismo contenido a diferentes formatos: un testimonio puede ser una historia, un post estático y un reel corto, triplicando el alcance sin triplicar el trabajo.'},
+          {categoria:'Horarios estratégicos', texto:'Publicar en los horarios de mayor actividad de la audiencia objetivo (lunes a viernes de 7-9 a.m. y 6-8 p.m.) usando las métricas de las propias redes.'},
+          {categoria:'Interacción', texto:'Reservar 15 minutos diarios para responder comentarios y mensajes en todas las plataformas, ya que el algoritmo premia las cuentas con alta interacción.'},
+          {categoria:'Métricas mensuales', texto:'Revisar al cierre de cada mes el alcance, impresiones y seguidores ganados para ajustar el tipo de contenido que mejor funciona con la audiencia del ITP.'},
+        ]
+      },
+    ]
+  },
+  {
+    key:'recepcion', label:'Recepcionista Administrativa', icon:'🗂️', cls:'a-recepcion', color:'#C0392B',
+    indicators:[
+      {
+        objetivo:'Fortalecer marca empresarial',
+        indicador:'Evaluación de satisfacción de la población estudiantil',
+        meta:'95%', base:'Evaluación realizada por el MTSS',
+        minus:80, igual:87.5, plus:95,
+        resumen:'La experiencia administrativa es el primer y último contacto del estudiante con el ITP; una atención excelente construye fidelidad y reputación institucional.',
+        consejos:[
+          {categoria:'Tiempos de entrega', texto:'Definir y comunicar a los estudiantes los plazos máximos de entrega para cada tipo de documento (constancias: 24 h, certificados: 48 h, facturas: el mismo día).'},
+          {categoria:'Protocolo de atención', texto:'Estandarizar el saludo, proceso de atención y despedida en ventanilla y vía telefónica para garantizar una experiencia consistente y profesional.'},
+          {categoria:'Encuesta rápida', texto:'Colocar un QR visible en recepción que lleve a una encuesta de 3 preguntas sobre la atención recibida, revisando resultados semanalmente.'},
+          {categoria:'Gestión de filas', texto:'Implementar un sistema de turnos o agenda digital para horarios pico, reduciendo tiempos de espera y mejorando la percepción del servicio.'},
+          {categoria:'Seguimiento de trámites', texto:'Notificar proactivamente al estudiante cuando su documento esté listo, en lugar de esperar a que el estudiante consulte, demostrando eficiencia.'},
+          {categoria:'Actitud de servicio', texto:'Capacitar al personal en escucha activa y manejo de estudiantes con inquietudes o quejas, asegurando que cada interacción cierre de forma positiva.'},
+        ]
+      },
+      {
+        objetivo:'Fortalecer marca empresarial',
+        indicador:'% de conversión interesados → matrícula',
+        meta:'50%', base:'N° de matriculados / N° de interesados × 100',
+        minus:30, igual:40, plus:50,
+        resumen:'Convertir la mitad de los interesados en estudiantes matriculados requiere un proceso de seguimiento rápido, empático y orientado al perfil de cada candidato.',
+        consejos:[
+          {categoria:'Respuesta inmediata', texto:'Contactar a cada persona interesada en menos de 2 horas hábiles desde que realiza su consulta, ya sea por WhatsApp, llamada o correo electrónico.'},
+          {categoria:'Guión de atención', texto:'Preparar un guión de conversación que destaque los beneficios del ITP, el perfil del egresado y las oportunidades de empleo, adaptado al interés de cada persona.'},
+          {categoria:'Seguimiento estructurado', texto:'Si el interesado no concreta en el primer contacto, hacer hasta 3 seguimientos (día 1, día 3 y día 7) antes de registrarlo como no matriculado.'},
+          {categoria:'Eliminación de barreras', texto:'Identificar las razones más comunes por las que los interesados no matriculan (costo, horario, distancia) y tener respuestas y soluciones preparadas para cada una.'},
+          {categoria:'Registro', texto:'Llevar un registro diario de interesados contactados y su estado (matriculado, en proceso, descartado) para medir la tasa de conversión en tiempo real.'},
+          {categoria:'Experiencia de primer contacto', texto:'Asegurar que la primera llamada o mensaje deje una impresión tan positiva que el interesado quiera conocer más, priorizando la escucha sobre la venta.'},
+        ]
+      },
+      {
+        objetivo:'Fortalecer marca empresarial',
+        indicador:'% de estudiantes con pagos al día – Programa Convenios',
+        meta:'100%', base:'Pagos al día / Total estudiantes matriculados convenios × 100',
+        minus:95, igual:97, plus:100,
+        resumen:'Mantener el 100 % de pagos al día en convenios garantiza la sostenibilidad financiera del ITP y la continuidad de los acuerdos institucionales.',
+        consejos:[
+          {categoria:'Recordatorios', texto:'Enviar un recordatorio de pago por WhatsApp 5 días antes de cada fecha de vencimiento a todos los estudiantes de convenio con el monto y los medios de pago disponibles.'},
+          {categoria:'Facilidades de pago', texto:'Ofrecer al menos dos opciones de medio de pago (SINPE, transferencia, efectivo) para eliminar barreras técnicas que retrasen el pago.'},
+          {categoria:'Seguimiento temprano', texto:'El día siguiente al vencimiento, contactar a los estudiantes con pago pendiente para consultar si necesitan apoyo o tienen algún inconveniente.'},
+          {categoria:'Coordinación con empresa', texto:'En convenios empresariales, confirmar con el departamento de RRHH de la empresa el proceso de pago para alinearlo con los plazos del ITP.'},
+          {categoria:'Registro claro', texto:'Mantener un tablero actualizado diariamente con el estado de pago de cada estudiante de convenio, visible para Recepción y Gerencia.'},
+          {categoria:'Consecuencias claras', texto:'Comunicar desde la matrícula las consecuencias de mora (bloqueo de certificados, suspensión) de forma respetuosa y por escrito para prevenir retrasos.'},
+        ]
+      },
+      {
+        objetivo:'Fortalecer marca empresarial',
+        indicador:'% de estudiantes con pagos al día – Cursos Libres',
+        meta:'100%', base:'Pagos al día / Total estudiantes matriculados Cursos Libres × 100',
+        minus:95, igual:97, plus:100,
+        resumen:'El control efectivo de pagos en Cursos Libres asegura los ingresos que financian la operación y permite planificar nuevas cohortes con certeza.',
+        consejos:[
+          {categoria:'Recordatorio automatizado', texto:'Configurar mensajes automáticos de recordatorio de pago por WhatsApp o correo 7 días y 1 día antes del vencimiento de cada cuota.'},
+          {categoria:'Matrícula condicionada', texto:'Informar desde la matrícula que la continuidad en el curso está condicionada al pago puntual, firmando un compromiso de pago con el estudiante.'},
+          {categoria:'Opciones flexibles', texto:'Ofrecer plan de pago en dos tractos para estudiantes con dificultades económicas verificadas, reduciendo la morosidad sin afectar la continuidad.'},
+          {categoria:'Control semanal', texto:'Revisar cada lunes el estado de pagos de todos los grupos activos e identificar a quienes tienen cuotas vencidas para contactarles ese mismo día.'},
+          {categoria:'Incentivo de puntualidad', texto:'Reconocer públicamente (en grupos de WhatsApp del curso) a los grupos con 100 % de pago puntual para generar una cultura positiva alrededor del pago.'},
+          {categoria:'Actualización inmediata', texto:'Registrar cada pago recibido en el sistema el mismo día para tener siempre la información precisa y evitar cobros duplicados o malentendidos.'},
+        ]
+      },
+      {
+        objetivo:'Fortalecer marca empresarial',
+        indicador:'% de reclamos resueltos',
+        meta:'100%', base:'N° de reclamos recibidos / N° de reclamos resueltos × 100',
+        minus:95, igual:97, plus:100,
+        resumen:'Resolver el 100 % de los reclamos demuestra que el ITP toma en serio cada voz estudiantil y convierte problemas en oportunidades de mejora institucional.',
+        consejos:[
+          {categoria:'Registro obligatorio', texto:'Registrar cada reclamo recibido (por cualquier canal) en una bitácora con fecha, nombre del estudiante, descripción y estado de resolución actualizado.'},
+          {categoria:'Tiempo de respuesta', texto:'Establecer un máximo de 48 horas hábiles para dar una primera respuesta a cualquier reclamo, aunque la resolución final tome más tiempo.'},
+          {categoria:'Responsable claro', texto:'Asignar inmediatamente un responsable de resolución para cada reclamo, evitando que quede en el limbo por falta de dueño del proceso.'},
+          {categoria:'Comunicación al estudiante', texto:'Mantener al estudiante informado sobre el estado de su reclamo con actualizaciones cada 24 horas hasta su resolución completa.'},
+          {categoria:'Causa raíz', texto:'Al resolver cada reclamo, identificar la causa raíz y si es sistémica, comunicarla a la Dirección para prevenir que el mismo problema afecte a otros estudiantes.'},
+          {categoria:'Cierre formal', texto:'Confirmar con el estudiante que el reclamo fue resuelto satisfactoriamente antes de cerrarlo en la bitácora, asegurando que la solución fue efectiva.'},
+        ]
+      },
+    ]
+  },
+  {
+    key:'acomp', label:'Acompañamiento Psicológico', icon:'🧠', cls:'a-acomp', color:'#0E8A55',
+    indicators:[
+      {
+        objetivo:'Fortalecer vinculación laboral',
+        indicador:'Retención de estudiantes en riesgo de deserción',
+        meta:'90% permanencia estudiantil', base:'N° estudiantes en permanencia / N° total de casos atendidos × 100',
+        minus:85.5, igual:87.5, plus:90,
+        resumen:'Retener al 90 % de los estudiantes en riesgo es una declaración del ITP de que ninguna persona quedará atrás sin recibir el apoyo que necesita.',
+        consejos:[
+          {categoria:'Detección temprana', texto:'Coordinar con docentes para identificar estudiantes en riesgo en la primera semana del programa, basándose en ausentismo, actitud o manifestaciones verbales de abandono.'},
+          {categoria:'Entrevista inicial', texto:'Realizar una entrevista de bienvenida a todos los estudiantes nuevos para identificar factores de riesgo (económicos, familiares, emocionales) antes de que se conviertan en crisis.'},
+          {categoria:'Plan individualizado', texto:'Para cada estudiante en riesgo, elaborar un plan de acompañamiento con objetivos concretos, frecuencia de sesiones y metas de permanencia mensurables.'},
+          {categoria:'Red de apoyo interna', texto:'Involucrar a docentes y compañeros como red de apoyo informal, creando un ambiente de grupo que motive la permanencia sin estigmatizar a quienes reciben acompañamiento.'},
+          {categoria:'Seguimiento postvención', texto:'Después de una crisis resuelta, mantener el seguimiento durante al menos 4 semanas adicionales para verificar que la estabilidad del estudiante sea sostenida.'},
+          {categoria:'Recursos externos', texto:'Mantener un directorio actualizado de recursos gratuitos (CCSS, IMAS, albergues, apoyo económico gubernamental) para conectar a estudiantes con necesidades que superan el alcance institucional.'},
+        ]
+      },
+      {
+        objetivo:'Fortalecer vinculación laboral',
+        indicador:'% de estudiantes inscritos en la plataforma ANE (PxR)',
+        meta:'100% de la población estudiantil', base:'N° de estudiantes inscritos / Total estudiantes matriculados × 100',
+        minus:95, igual:97, plus:100,
+        resumen:'La inscripción en ANE conecta a cada estudiante con oportunidades laborales reales desde el primer día; alcanzar el 100 % es garantizar que nadie se quede sin esa puerta abierta.',
+        consejos:[
+          {categoria:'Inscripción en matrícula', texto:'Incluir el registro en la plataforma ANE como paso obligatorio del proceso de matrícula, con apoyo técnico de la recepcionista o psicóloga si el estudiante tiene dificultades.'},
+          {categoria:'Taller de uso', texto:'Realizar un taller de 30 minutos al inicio de cada programa para enseñar a los estudiantes cómo usar la plataforma ANE, cargar su CV y aplicar a ofertas.'},
+          {categoria:'Verificación semanal', texto:'Revisar semanalmente la lista de estudiantes no inscritos y contactarles directamente para resolver dudas técnicas o barreras de acceso a internet.'},
+          {categoria:'Motivación', texto:'Compartir casos concretos de estudiantes del ITP que consiguieron empleo a través de ANE para motivar a los que aún no se han inscrito.'},
+          {categoria:'Apoyo técnico', texto:'Ofrecer un espacio físico con computadoras disponibles en el ITP para que estudiantes sin acceso a internet o dispositivos puedan completar su registro.'},
+          {categoria:'Meta compartida', texto:'Publicar en el tablero del ITP el porcentaje de inscripción actual y celebrar en grupo cuando se alcance el 100 %, creando un sentido de logro colectivo.'},
+        ]
+      },
+    ]
+  },
+  {
+    key:'vinculacion', label:'Vinculación Laboral', icon:'🤝', cls:'a-vinculacion', color:'#B7770D',
+    indicators:[
+      {
+        objetivo:'Fortalecer vinculación laboral',
+        indicador:'Crecimiento del número de alianzas estratégicas empresariales',
+        meta:'40', base:'N° empresas actuales + N° empresas nuevas = N° empresas totales',
+        minus:25, igual:30, plus:40,
+        resumen:'Cada nueva alianza empresarial es una puerta de empleo abierta para los estudiantes del ITP; llegar a 40 empresas activas es el motor del impacto social del instituto.',
+        consejos:[
+          {categoria:'Prospección activa', texto:'Elaborar una lista de 20 empresas objetivo por sector (manufactura, BPO, retail, tecnología) y asignar una a cada semana para contactar con una propuesta personalizada.'},
+          {categoria:'Propuesta de valor clara', texto:'Preparar un documento de una página que explique qué ofrece el ITP a las empresas: talento capacitado, proceso de selección ágil y seguimiento postventa.'},
+          {categoria:'Networking', texto:'Participar en eventos empresariales de la cámara de comercio o asociaciones sectoriales para hacer contactos cara a cara que luego se conviertan en alianzas formales.'},
+          {categoria:'Reactivación', texto:'Contactar a empresas que alguna vez contrataron estudiantes del ITP pero dejaron de hacerlo, preguntando qué necesitarían para retomar la relación.'},
+          {categoria:'Facilidad para la empresa', texto:'Ofrecer un proceso de selección llave en mano donde el ITP filtra, entrevista y presenta solo 3 candidatos idóneos, minimizando el esfuerzo de la empresa.'},
+          {categoria:'Reconocimiento', texto:'Crear un programa de "Empresa Aliada ITP" con reconocimiento en redes sociales y en eventos del instituto para que las empresas valoren y comuniquen su vínculo con el ITP.'},
+        ]
+      },
+      {
+        objetivo:'Fortalecer vinculación laboral',
+        indicador:'% de estudiantes contratados',
+        meta:'≥70% Anual', base:'N° estudiantes contratados / Total población capacitada por período × 100',
+        minus:50, igual:60, plus:70,
+        resumen:'Que 7 de cada 10 graduados consigan empleo es la promesa central del ITP; alcanzar este indicador valida todo el modelo de formación del instituto.',
+        consejos:[
+          {categoria:'Seguimiento de egresados', texto:'Contactar a cada estudiante graduado a los 30 días de concluir el programa para verificar si está empleado y, si no, activar el proceso de colocación activa.'},
+          {categoria:'Banco de ofertas activo', texto:'Mantener al menos 5 ofertas de empleo vigentes en todo momento a través de las empresas aliadas, asegurando opciones disponibles para cada grupo que egresa.'},
+          {categoria:'Preparación para la entrevista', texto:'Incluir al menos 2 sesiones de simulacro de entrevista en cada programa, con retroalimentación individualizada para que cada estudiante llegue confiado al proceso de selección.'},
+          {categoria:'CV actualizado', texto:'Verificar antes del egreso que el 100 % de los estudiantes tiene un CV actualizado, bien presentado y cargado en la plataforma ANE.'},
+          {categoria:'Inserción directa', texto:'Para estudiantes con mayor dificultad de inserción, hacer referencias directas a empresas aliadas con las que exista mayor confianza y flexibilidad en el perfil requerido.'},
+          {categoria:'Datos en tiempo real', texto:'Registrar en una hoja compartida el estado laboral de cada egresado (empleado, en búsqueda, no disponible) y actualizar mensualmente para monitorear el indicador.'},
+        ]
+      },
+      {
+        objetivo:'Fortalecer vinculación laboral',
+        indicador:'% de estudiantes que mantienen empleo 3 meses',
+        meta:'≥60% Anual', base:'Total población vinculada / Total población capacitada × 100',
+        minus:40, igual:50, plus:60,
+        resumen:'Mantener el empleo a 3 meses refleja que la formación del ITP no solo coloca, sino que prepara para el éxito sostenido en el mundo laboral.',
+        consejos:[
+          {categoria:'Seguimiento a 30 días', texto:'Contactar al estudiante colocado al mes de inicio laboral para consultar sobre su adaptación, dificultades y si necesita algún apoyo adicional del ITP.'},
+          {categoria:'Contacto con la empresa', texto:'Hacer una llamada de seguimiento al supervisor de la empresa aliada al mes de haber colocado al estudiante para detectar señales tempranas de riesgo de desvinculación.'},
+          {categoria:'Habilidades blandas', texto:'Reforzar en los programas los temas de adaptación laboral, manejo de conflictos con compañeros y comunicación con superiores, que son causas frecuentes de abandono temprano.'},
+          {categoria:'Red de pares', texto:'Crear un grupo de WhatsApp de egresados recién colocados donde puedan compartir experiencias, apoyarse mutuamente y consultar al equipo del ITP sobre situaciones laborales.'},
+          {categoria:'Mentoría', texto:'Conectar a estudiantes recién colocados con egresados ITP con más experiencia laboral que puedan orientarles durante los primeros meses en la empresa.'},
+          {categoria:'Intervención oportuna', texto:'Si a los 45 días se detecta riesgo de renuncia o despido, activar una intervención rápida (reunión del ITP con el estudiante y si es necesario con la empresa) para prevenir la desvinculación.'},
+        ]
+      },
+      {
+        objetivo:'Fortalecer vinculación laboral',
+        indicador:'% de estudiantes que mantienen empleo 6 meses',
+        meta:'≥50% Anual', base:'Total población vinculada / Total población capacitada × 100',
+        minus:30, igual:40, plus:50,
+        resumen:'Que la mitad de los colocados mantenga su empleo 6 meses demuestra que el ITP forma profesionales listos para el largo plazo, no solo para la primera semana.',
+        consejos:[
+          {categoria:'Seguimiento semestral', texto:'Establecer un contacto formal a los 3 y 6 meses con cada egresado colocado para medir su situación laboral y recoger aprendizajes para futuros programas.'},
+          {categoria:'Formación continua', texto:'Ofrecer a egresados empleados la posibilidad de tomar un módulo corto de actualización gratuito al cumplir 3 meses laborales, reforzando su vínculo con el ITP.'},
+          {categoria:'Estabilidad financiera', texto:'Incluir en los programas una sesión básica de educación financiera para que los estudiantes gestionen bien su primer salario y no abandonen el empleo por presiones económicas mal manejadas.'},
+          {categoria:'Reporte a empresa', texto:'Compartir con la empresa aliada (con consentimiento del estudiante) un breve informe de avance a los 3 meses, fortaleciendo la confianza en el ITP como socio estratégico.'},
+          {categoria:'Análisis de bajas', texto:'Documentar cada caso de desvinculación antes de los 6 meses con la causa específica y usar esa información para mejorar el proceso de selección o de formación.'},
+          {categoria:'Reconocimiento de logros', texto:'Publicar en redes sociales del ITP (con autorización) casos de estudiantes que cumplen 6 meses exitosos en sus empleos, motivando a futuros estudiantes e inspirando a empresas.'},
+        ]
+      },
+      {
+        objetivo:'Fortalecer vinculación laboral',
+        indicador:'% de estudiantes inscritos en la plataforma ANE (PxR)',
+        meta:'100% de la población estudiantil', base:'N° de estudiantes inscritos / Total estudiantes matriculados × 100',
+        minus:95, igual:97, plus:100,
+        resumen:'El registro universal en ANE garantiza que cada estudiante del ITP tenga acceso a todas las oportunidades del Sistema Nacional de Empleo desde el primer día.',
+        consejos:[
+          {categoria:'Inscripción en el primer día', texto:'Dedicar los últimos 20 minutos de la primera sesión de cada programa a guiar a todos los estudiantes en el registro a ANE, con apoyo técnico en tiempo real.'},
+          {categoria:'Lista de control', texto:'El docente o coordinador verifica al final de la primera semana la lista de inscritos en ANE y contacta individualmente a quienes falta completar el proceso.'},
+          {categoria:'QR de acceso directo', texto:'Pegar en las aulas y en recepción un código QR que lleve directamente al formulario de registro ANE para facilitar el acceso desde el celular.'},
+          {categoria:'Apoyo tecnológico', texto:'Habilitar un horario semanal de 1 hora en la sala de cómputo del ITP para que estudiantes sin acceso a dispositivos o internet completen su registro con asistencia.'},
+          {categoria:'Incentivo de inscripción', texto:'Comunicar que solo los estudiantes inscritos en ANE pueden ser referenciados a las empresas aliadas del ITP, creando un incentivo directo para completar el registro.'},
+          {categoria:'Verificación mensual', texto:'Revisar el padrón de inscritos cada mes y actualizar la base de datos del ITP para asegurar que nuevas matriculas queden registradas en ANE dentro de los primeros 7 días.'},
+        ]
+      },
+      {
+        objetivo:'Fortalecer vinculación laboral',
+        indicador:'Evaluación de satisfacción de las empresas (Vinculación)',
+        meta:'≥95', base:'Calificación 87,5',
+        minus:80, igual:87.5, plus:95,
+        resumen:'La alta satisfacción de las empresas es la mejor referencia que puede tener el ITP; una empresa satisfecha regresa y trae a otras.',
+        consejos:[
+          {categoria:'Encuesta formal', texto:'Aplicar una encuesta de satisfacción estructurada a cada empresa dentro de los 30 días siguientes a la colocación de un estudiante, compartiendo los resultados con la Dirección.'},
+          {categoria:'Expectativas alineadas', texto:'Antes de enviar candidatos, confirmar con la empresa el perfil exacto requerido, el horario, salario y condiciones, evitando desajustes que generan insatisfacción.'},
+          {categoria:'Atención personalizada', texto:'Asignar a cada empresa aliada un contacto específico del ITP (Vinculación Laboral) que conozca su historia y necesidades, brindando atención personalizada y no genérica.'},
+          {categoria:'Resolución rápida', texto:'Si la empresa reporta un problema con un candidato colocado, responder en menos de 24 horas con una solución concreta o un candidato de reemplazo si fuera necesario.'},
+          {categoria:'Valor agregado', texto:'Más allá del proceso de colocación, compartir con las empresas aliadas información útil: estadísticas de mercado, tips de retención de talento junior, invitaciones a eventos ITP.'},
+          {categoria:'Revisión de resultados', texto:'Presentar a las empresas aliadas un informe semestral con los indicadores de desempeño de los estudiantes colocados (permanencia, evaluación del empleador) para demostrar el valor del ITP.'},
+        ]
+      },
+    ]
+  }
+];
+
+// ═══════ RENDER ═══════
+const root = document.getElementById('areas-root');
+areas.forEach(area => {
+  const sec = document.createElement('div');
+  sec.className = `area-section ${area.cls}`;
+  sec.id = 'sec-' + area.key;
+  sec.innerHTML = `
+    <div class="area-header" onclick="toggleSec('sec-${area.key}')">
+      <div class="area-title"><span>${area.icon}</span> ${area.label}<span class="area-count">${area.indicators.length} indicadores</span></div>
+      <span class="chevron">▾</span>
+    </div>
+    <div class="area-body" id="body-${area.key}"></div>`;
+  root.appendChild(sec);
+
+  const body = document.getElementById('body-' + area.key);
+  area.indicators.forEach((ind, idx) => {
+    const minV = Math.min(ind.minus, ind.igual, ind.plus);
+    const maxV = Math.max(ind.minus, ind.igual, ind.plus);
+    const pct  = maxV === minV ? 75 : Math.round(((ind.plus - minV)/(maxV - minV))*100);
+    const card = document.createElement('div');
+    card.className = 'ind-card';
+    card.innerHTML = `
+      <div class="card-stripe" style="background:${area.color}"></div>
+      <div class="ind-obj">${ind.objetivo}</div>
+      <div class="ind-name">${ind.indicador}</div>
+      <div class="meta-row"><span class="meta-lbl">Meta:</span><span class="meta-val">${ind.meta}</span></div>
+      <div class="prog-wrap">
+        <div class="prog-bg"><div class="prog-fill" style="width:${Math.min(100,pct)}%"></div></div>
+        <span class="prog-lbl">+</span>
+      </div>
+      <div class="card-actions">
+        <button class="btn-detail" onclick="openDetail('${area.key}',${idx})">📋 Ver detalle</button>
+        <button class="btn-tips"   onclick="openTips('${area.key}',${idx},event)">💡 Consejo ITP</button>
+      </div>`;
+    body.appendChild(card);
+  });
+});
+
+// ═══════ TOGGLE ═══════
+function toggleSec(id) { document.getElementById(id).classList.toggle('collapsed'); }
+
+// ═══════ DETAIL MODAL ═══════
+function openDetail(aKey, idx) {
+  const area = areas.find(a => a.key === aKey);
+  const ind  = area.indicators[idx];
+  document.getElementById('dBadge').textContent = area.icon + ' ' + area.label;
+  document.getElementById('dBadge').style.background = area.color;
+  document.getElementById('dTitle').textContent = ind.indicador;
+  const minV = Math.min(ind.minus,ind.igual,ind.plus);
+  const maxV = Math.max(ind.minus,ind.igual,ind.plus);
+  const range = maxV - minV || 1;
+  const h = v => Math.max(14, Math.round(((v - minV)/range)*76+14));
+  document.getElementById('dBody').innerHTML = `
+    <p class="sec-title">📋 Información General</p>
+    <table class="dtable">
+      <tr><th>Área</th><td>${area.icon} ${area.label}</td></tr>
+      <tr><th>Objetivo Estratégico</th><td>${ind.objetivo}</td></tr>
+      <tr><th>Indicador de Impacto</th><td>${ind.indicador}</td></tr>
+      <tr><th>Meta</th><td><strong style="color:var(--blue)">${ind.meta}</strong></td></tr>
+      <tr><th>Base de Medición</th><td style="font-style:italic;color:var(--muted)">${ind.base}</td></tr>
+    </table>
+    <p class="sec-title">🚦 Semáforo de Desempeño</p>
+    <div class="sem-grid">
+      <div class="sem-cell sem-bad"><div class="sem-icon">🔴</div><div class="sem-label">Por debajo</div><div class="sem-value">${ind.minus}</div><div class="sem-desc">Requiere acción inmediata</div></div>
+      <div class="sem-cell sem-neutral"><div class="sem-icon">🟡</div><div class="sem-label">En progreso</div><div class="sem-value">${ind.igual}</div><div class="sem-desc">Avance satisfactorio</div></div>
+      <div class="sem-cell sem-good"><div class="sem-icon">🟢</div><div class="sem-label">Meta alcanzada</div><div class="sem-value">${ind.plus}</div><div class="sem-desc">Objetivo estratégico cumplido</div></div>
+    </div>
+    <p class="sec-title">📊 Comparativa de Niveles</p>
+    <div class="chart-area">
+      <div class="chart-col"><span class="chart-val" style="color:var(--red)">${ind.minus}</span><div class="chart-bar bar-bad" style="height:${h(ind.minus)}px"></div><span class="chart-lbl">Mínimo (−)</span></div>
+      <div class="chart-col"><span class="chart-val" style="color:var(--amber)">${ind.igual}</span><div class="chart-bar bar-neutral" style="height:${h(ind.igual)}px"></div><span class="chart-lbl">Progreso (=)</span></div>
+      <div class="chart-col"><span class="chart-val" style="color:var(--green)">${ind.plus}</span><div class="chart-bar bar-good" style="height:${h(ind.plus)}px"></div><span class="chart-lbl">Meta (+)</span></div>
+    </div>`;
+  document.getElementById('detailOverlay').classList.add('open');
+}
+function closeDetailModal() { document.getElementById('detailOverlay').classList.remove('open'); }
+function closeDetail(e) { if (e.target.id === 'detailOverlay') closeDetailModal(); }
+
+// ═══════ TIPS MODAL ═══════
+function openTips(aKey, idx, event) {
+  event.stopPropagation();
+  const area = areas.find(a => a.key === aKey);
+  const ind  = area.indicators[idx];
+  document.getElementById('tipsArea').textContent  = area.icon + ' ' + area.label;
+  document.getElementById('tipsTitle').textContent = ind.indicador;
+  document.getElementById('tipsBody').innerHTML = `
+    <div class="tips-intro"><strong>💡 ¿Por qué es importante?</strong><br>${ind.resumen}</div>
+    <p class="sec-title" style="margin-bottom:14px">🚀 Consejos ITP para alcanzar la meta</p>
+    <div class="tips-list">
+      ${ind.consejos.map((c,i)=>`
+        <div class="tip-item" style="animation-delay:${i*.07}s">
+          <div class="tip-num">${i+1}</div>
+          <div class="tip-content">
+            <div class="tip-category">${c.categoria}</div>
+            <div class="tip-text">${c.texto}</div>
+          </div>
+        </div>`).join('')}
+    </div>
+    <div class="tips-footer">📘 Consejos elaborados por el equipo del Instituto Tecnológico Polivalente · Plan Estratégico ITP 2026</div>`;
+  document.getElementById('tipsOverlay').classList.add('open');
+}
+function closeTipsModal() { document.getElementById('tipsOverlay').classList.remove('open'); }
+function closeTipsEv(e)   { if (e.target.id === 'tipsOverlay') closeTipsModal(); }
+document.addEventListener('keydown', e => { if (e.key==='Escape') { closeDetailModal(); closeTipsModal(); } });
+</script>
+</body>
+</html>
